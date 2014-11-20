@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "citrus\\commons\\": "/citrus/commons/src/citrus/commons/"
+            "citrus\\commons\\": "/src/citrus/commons/"
         }
     }
 }
