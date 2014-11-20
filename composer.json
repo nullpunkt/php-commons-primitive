@@ -1,0 +1,17 @@
+{
+    "name": "citrus/commons",
+    "description": "A library of common functionality used within php.",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Tobias Seipke",
+            "email": "tobias.seipke@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Namespace\\": "src/"
+        }
+    }
+}
