@@ -70,4 +70,25 @@ class Files {
     public static function fileEnding($path) {
         return substr($path, strrpos($path, ".")+1);
     }
+
+    /**
+     * Creates a directory recursively starting at base
+     *
+     * @param $dir
+     * @param $base
+     * @return bool
+     */
+	public function mkdirrec($base, $dir) {
+		$explode = explode((!(strpos($dir, '/')<0) ? '/' : '\\'), $dir);
+		$dir = $base;
+		foreach($explode as $append) {
+			$dir.="/".$append;
+			if(!is_dir($dir)) {
+				if(!mkdir($dir)) {
+					return false;
+                }
+            }
+		}
+		return true;
+	}
 }
