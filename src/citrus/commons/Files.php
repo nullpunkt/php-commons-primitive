@@ -97,9 +97,9 @@ class Files {
      * @param $dir
      */
     public function deleteDir($dir) {
-        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it,
-            RecursiveIteratorIterator::CHILD_FIRST);
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it,
+            \RecursiveIteratorIterator::CHILD_FIRST);
         foreach($files as $file) {
             if ($file->getFilename() === '.' || $file->getFilename() === '..') {
                 continue;
