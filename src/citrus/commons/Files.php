@@ -72,6 +72,26 @@ class Files {
     }
 
     /**
+     * Recursively copies $source to $dest (http://stackoverflow.com/questions/5707806/recursive-copy-of-directory)
+     * @param $source
+     * @param $dest
+     */
+    public static function copyRecursive($source, $dest) {
+        mkdir($dest, 0755);
+        foreach (
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST) as $item
+        ) {
+            if ($item->isDir()) {
+                mkdir($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+            } else {
+                copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+            }
+        }
+    }
+
+    /**
      * Creates a directory recursively starting at base
      *
      * @param $dir
