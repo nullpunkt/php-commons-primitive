@@ -73,20 +73,35 @@ class Files {
 
     /**
      * Recursively copies $source to $dest (http://stackoverflow.com/questions/5707806/recursive-copy-of-directory)
+     *
      * @param $source
      * @param $dest
+     * @param $overwrite
      */
-    public static function copyRecursive($source, $dest) {
-        mkdir($dest, 0755);
+    public static function copyRecursive($source, $dest, $overwrite=FALSE) {
+
+        if(file_exists($dest) && !$overwrite) {
+            throw new \Exception("Could not copy file/directory because target already exists: ".$dest);
+        }
+        if(!file_exists($dest)) {
+            mkdir($dest, 0755);
+        }
+
         foreach (
             $iterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::SELF_FIRST) as $item
         ) {
+            $target = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+            if(file_exists($target) && !$overwrite) {
+                throw new \Exception("Could not copy file/directory because target already exists: ".$dest);
+            }
             if ($item->isDir()) {
-                mkdir($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+                if(!file_exists($target)) {
+                    mkdir($target);
+                }
             } else {
-                copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+                copy($item, $target);
             }
         }
     }
