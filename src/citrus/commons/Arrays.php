@@ -430,4 +430,20 @@ class Arrays {
         }
         return $ret;
     }
+
+    /**
+     * Fills $source with $value till its count() == $size
+     *
+     * @param $source
+     * @param $size
+     * @param $value
+     */
+    static function fill(&$source, $size, $value) {
+        if(!is_array($source) || !is_int($size)) {
+            return;
+        }
+        while(count($source)<$size) {
+            array_push($source, $value);
+        }
+    }
 } 
