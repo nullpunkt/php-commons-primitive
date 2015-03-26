@@ -8,17 +8,18 @@ class Arrays {
 
     /**
      * Searches for $value in the $array and returns the index if found, otherwise NULL is returned.
-     *
      * @param array $array The array within the value should be searched.
      * @param mixed $value The value which should be searched for.
      * @return mixed|NULL
      */
-    static function indexOf($array, $value) {
-        foreach($array as $index => $v)
-            if($v===$value)return $index;
+    static function indexOf(array $array, $value) {
+        foreach($array as $index => $v) {
+            if($v===$value) {
+                return $index;
+            }
+        }
         return NULL;
     }
-
 
     /**
      * Casts value to an array in case it isn't already one. Returns true whether the value was transformed to an array.
@@ -46,20 +47,12 @@ class Arrays {
 
     /**
      * Creates an index at position $key in $array if the key doesn't exist. If an index is created the value is set to $value.
-     * @param type $array
-     * @param type $key
-     * @param type $value
+     * @param array $array
+     * @param mixed $key
+     * @param mixed $value
      * @return boolean Returns true if the key was created
      */
-    static function createKeyIfNotExists(&$array, $key, $value) {
-        if(is_null($array)) {
-            vardump(array(
-                "error createKeyIfNotExists",
-                "array" => $array,
-                "key" => $key,
-                "value" => $value
-            ));
-        }
+    static function createKeyIfNotExists(array &$array, $key, $value) {
         if(!array_key_exists($key, $array)) {
             $array[$key] = $value;
             return true;
@@ -67,16 +60,14 @@ class Arrays {
         return false;
     }
 
-
     /**
      * Insert $value into array if the value doesn't exist. When $key is not NULL it's used as key. Returns true if the value was created.
-     *
-     * @param type $array
-     * @param type $value
-     * @param type $key
-     * @return
+     * @param array $array
+     * @param mixed $value
+     * @param null $key
+     * @return bool
      */
-    static function createValueIfNotExists(&$array, $value, $key=NULL) {
+    static function createValueIfNotExists(array &$array, $value, $key=NULL) {
         $exists = in_array($value, $array);
         if(!$exists) {
             if($key!==NULL)$array[$key] = $value;
@@ -87,29 +78,31 @@ class Arrays {
 
     /**
      * Searches for $key in $array and returns its value - otherwise $default is returned
-     *
      * @param array $array
      * @param mixed $key
      * @param mixed $default
      * @return mixed
      */
-    static function getValueIfKeyExists($array, $key, $default) {
+    static function getValueIfKeyExists(array $array, $key, $default) {
         return (array_key_exists($key, $array)) ? $array[$key] : $default;
     }
 
-
     /**
      * Splits an array into parts of $partSize and returns an array containing the parts.
-     * @param type $array
-     * @param int $partSize
+     * @param $array
+     * @param $partSize
      * @return array
+     * @throws \InvalidArgumentException
      */
-    static function split($array, $partSize) {
+    static function split(array $array, $partSize) {
         $ret = array();
         $tmp = array();
-        if(!is_numeric($partSize))
-            throw new Exception("The partSize must be numeric.");
-        if($partSize<1)$partSize = 1;
+        if(!is_numeric($partSize)) {
+            throw new \InvalidArgumentException("The partSize must be numeric.");
+        }
+        if($partSize<1) {
+            $partSize = 1;
+        }
         foreach($array as $index => $value) {
             $tmp[$index] = $value;
             if(count($tmp)==$partSize) {
@@ -123,56 +116,81 @@ class Arrays {
         return $ret;
     }
 
-
-    static function toString($array) {
+    /**
+     * Generates a string from array
+     * @param array $array
+     * @return string
+     */
+    static function toString(array $array) {
         $ret = "";
-        foreach($array as $index => $value)
+        foreach($array as $index => $value) {
             $ret .= ($ret=="") ? "".$index.": ".$value : ", ".$index.": ".$value;
-        return $ret;
-    }
-
-    static function fromDoctrineCollection(Doctrine_Collection $doctrineCollection, $keyField, $valueField) {
-        $ret = array();
-        $keys = $doctrineCollection->getKeys();
-        foreach($keys as $key) {
-            $entity = $doctrineCollection->get($key);
-            self::createKeyIfNotExists($ret, $entity->$keyField, $entity->$valueField);
         }
         return $ret;
     }
 
-
-    static function firstValue($array) {
-        if(!is_array($array))return $array;
-        if(count($array)===0)return NULL;
-        foreach($array as $g => $v)return $v;
+    /**
+     * Returns the first value of $array
+     * @param array $array
+     * @return mixed|NULL
+     */
+    static function firstValue(array $array) {
+        foreach($array as $g => $v) {
+            return $v;
+        }
+        return NULL;
     }
 
-    static function nthValue($array, $n=1) {
-        if(!is_array($array))throw Exception('Given value is not an array.');
+    /**
+     * Returns the $n'th value of $array
+     * @param array $array
+     * @param int $n
+     * @return mixed|NULL
+     */
+    static function nthValue(array $array, $n=1) {
         $cnt=0;
-        foreach($array as $g => $v)if(++$cnt==$n)return $v;
+        foreach($array as $g => $v) {
+            if(++$cnt==$n) {
+                return $v;
+            }
+        }
+        return NULL;
     }
 
-    static function oneIndex($array) {
+    /**
+     * If the given $array contains only one index, it will be returned. Otherwise null ist returned.
+     * @param array $array
+     * @return int|null|string
+     */
+    static function oneIndex(array $array) {
         if(count($array)!=1)return NULL;
-        foreach($array as $g => $v)return $g;
+        foreach($array as $g => $v) {
+            return $g;
+        }
+        return NULL;
     }
 
-    static function firstIndex($array) {
-        if(!is_array($array))return $array;
-        foreach($array as $g => $v)return $g;
+    /**
+     * Returns the first index of $array
+     * @param $array
+     * @return int|string|null
+     */
+    static function firstIndex(array $array) {
+        foreach($array as $g => $v) {
+            return $g;
+        }
+        return NULL;
     }
 
     /**
      * Merges arrays and maintains indexes.
-     *
      * @param array $arr1
      * @param array $arr2
-     * @param array $arr3
+     * @param array $arr3 (optional)
+     * @param array $arr4 (optional)
      * @return array
      */
-    static function aarray_merge($arr1, $arr2, $arr3=NULL, $arr4=NULL) {
+    static function aarray_merge(array $arr1, array $arr2, array $arr3=NULL, array $arr4=NULL) {
         $ret = array();
         foreach($arr1 as $i => $v)$ret[$i] = $v;
         foreach($arr2 as $i => $v)$ret[$i] = $v;
@@ -190,118 +208,116 @@ class Arrays {
      * @param array $array
      * @return boolean
      */
-    static function keysExist($keys, $array) {
+    static function keysExist(array $keys, array $array) {
         return (count(array_intersect($keys, array_keys($array)))==count($keys));
     }
 
     /**
      * Check if the path in the given array exists. Eg.: $array = $array["foo"]["bar"]; keyPathExists($array, array("foo", "bar") returns true;
-     * @param type $keys
-     * @param type $path
+     * @param array $array
+     * @param array $path
+     * @return bool
      */
-    static function keyPathExists($array, $path=array()) {
+    static function keyPathExists(array $array, array $path) {
         foreach($path as $key) {
-            if(!array_key_exists($key, $array))
+            if(!array_key_exists($key, $array)) {
                 return false;
+            }
             $array = $array[$key];
         }
         return true;
     }
 
-
     /**
-     * Return the value in the given keypath. Returns null if not exist;
-     * @param type $keys
-     * @param type $path
+     * Return the value in the given keypath. Returns $default (default=null) if not exist
+     * @param array $array
+     * @param array $path
+     * @param null|mixed $default (default=null)
+     * @return null|mixed
      */
-    static function keyPathValue($array, $path) {
-        if(!is_array($array) || !is_array($path)) {
-            return NULL;
+    static function keyPathValue(array $array, array $path, $default=NULL) {
+        if(!is_array($path)) {
+            return $default;
         }
         foreach($path as $key) {
-            if(!array_key_exists($key, $array))
-                return null;
+            if(!is_array($array) || !array_key_exists($key, $array))
+                return $default;
             $array = $array[$key];
         }
         return $array;
     }
 
     /**
-     * Kopiert den index und setzt ihn jeweil als value
+     * Returns an array where index and value are the indexes of input array
      * @param array $array
      * @return array
      */
-    static function indexAsValue($array) {
-        foreach($array as $idx => $val)
+    static function indexAsValue(array $array) {
+        foreach($array as $idx => $val) {
             $array[$idx] = $idx;
+        }
         return $array;
     }
 
     /**
-     * Kopiert den value und setzt ihn jeweil als index
+     * Returns an array where index and value are the values of input array
      * @param array $array
      * @return array
      */
-    static function valueAsIndex($array) {
+    static function valueAsIndex(array $array) {
         $ret = array();
-        foreach($array as $idx => $val)
+        foreach($array as $idx => $val) {
             $ret[$val] = $val;
+        }
         return $ret;
     }
 
     /**
-     * Removes all indexes with value $value
+     * Removes all entries of $array where array value = $value, $value could be an array of values to remove
      * @param array $array
-     * @param mixed $value
+     * @param mixed|array $value
+     * @return array
      */
-    static function removeValue(&$array, $value) {
-        $tmp = array();
-        foreach($array as $v)
-            if($v!=$value)
-                $tmp[] = $v;
-        $array = $tmp;
-    }
-
-    /**
-     * Removes all entries in $array with value $cleanIt
-     * @param array $array
-     * @param string|array $cleanIt
-     */
-    static function cleanUp($array, $cleanIt="") {
+    static function removeValue(array $array, $value) {
         $ret = array();
-        foreach($array as $val)
+        foreach($array as $val) {
             if(
-                (is_array($cleanIt)&&!in_array($val, $cleanIt)) ||
-                (!is_array($cleanIt)&&$val!=$cleanIt)
-            )
+                (is_array($value)&&!in_array($val, $value)) ||
+                (!is_array($value)&&$val!=$value)
+            ) {
                 $ret[] = $val;
+            }
+        }
         return $ret;
     }
 
     /**
-     * Removes all entries in $array with key $cleanIt
+     * Removes all entries of $array where key = $key, $key could be an array of keys to remove
      * @param array $array
-     * @param string $cleanIt
+     * @param string $key
+     * @return array
      */
-    static function cleanUpIndex($array, $cleanIt="") {
+    static function removeKey(array $array, $key="") {
         $ret = array();
-        foreach($array as $key => $val)
+        foreach($array as $k => $val) {
             if(
-                (is_array($cleanIt)&&!in_array($key, $cleanIt)) ||
-                (!is_array($cleanIt)&&$key!=$cleanIt)
-            )
-                $ret[$key] = $val;
+                (is_array($key)&&!in_array($k, $key)) ||
+                (!is_array($key)&&$k!=$key)
+            ) {
+                $ret[$k] = $val;
+            }
+        }
         return $ret;
     }
 
     /**
      * Maps a new array by using $indexField for index and $valueField for the value
-     * @param type $array
-     * @param type $indexField
-     * @param type $valueField
+     * @param array $array
+     * @param int|string $indexField
+     * @param int|string $valueField
      * @return array
      */
-    static function map($array, $indexField, $valueField) {
+    static function map(array $array, $indexField, $valueField) {
         $ret = array();
         foreach($array as $values) {
             $ret[$values[$indexField]] = $values[$valueField];
@@ -310,17 +326,24 @@ class Arrays {
     }
 
     /**
-     * Flattens a multidimensional $array into a 2 dimensional array using $seperator for seperating indexes
-     * @param type $array
-     * @param type $seperator
+     * Flattens a multidimensional $array into a simple array using $seperator for seperating nesting levels
+     * @param array $array
+     * @param string $seperator
      * @return array
      */
-    static function flat($array, $seperator='.') {
+    static function flat(array $array, $seperator='.') {
         $ret = array();
         self::_flat($ret, $array, $seperator);
         return $ret;
     }
 
+    /**
+     * Helper function for Arrays::flat()
+     * @param $ret
+     * @param $array
+     * @param $seperator
+     * @param string $prefix
+     */
     private static function _flat(&$ret, $array, $seperator, $prefix='') {
         foreach($array as $index=> $value) {
             if(is_object($value)) continue;
@@ -329,53 +352,17 @@ class Arrays {
         }
     }
 
-    static function sortObjectsByMethod(&$array, $method, $desc=false) {
-        $methodName = uniqid('sort');
-        eval('function '.$methodName.'($a, $b) {
-            $a = $a->'.$method.'(); $b = $b->'.$method.'();
-            if ($a == $b) return 0;
-            return ($a '.($desc?'>':'<').' $b) ? -1 : 1;
-        }');
-        uasort($array, $methodName);
-    }
-
-    static function sortArraysByValue(&$array, $valueIndex, $desc=false) {
-        $methodName = uniqid('sort');
-        eval('function '.$methodName.'($a, $b) {
-            $a = $a["'.$valueIndex.'"]; $b = $b["'.$valueIndex.'"];
-            if ($a == $b) return 0;
-            return ($a '.($desc?'>':'<').' $b) ? -1 : 1;
-        }');
-        uasort($array, $methodName);
-    }
-
-    static function copyValues($indexes, $source, &$sink, $default=array()) {
-        foreach($indexes as $index)
-            if(array_key_exists($index, $source))
-                $sink[$index] = $source[$index];
-            elseif(array_key_exists($index, $default))
-                $sink[$index] = $default[$index];
-    }
-
     /**
-     * Assigns the value of the $variable to the value in $index of the $array. Assings $default if array key doesn't exist.
-     *
-     *
-     * @param type $array
-     * @param type $index
-     * @param type $variable
-     * @param type $default
+     * Returns null if $array is null, no array or an empty array
+     * @param array|null $array
+     * @return bool
      */
-    static function assignValue($array, $index, &$variable, $default=NULL) {
-        $variable = (array_key_exists($index, $array))
-            ? $array[$index]
-            : $default;
-    }
-
     static function isEmpty($array) {
-        if($array===NULL)return true;
-        if(!is_array($array))return true;
-        return count($array)==0;
+        return
+            $array===NULL
+            || !is_array($array)
+            || count($array)===0
+        ;
     }
 
     /**
@@ -384,29 +371,17 @@ class Arrays {
      * @param array $array
      * @return boolean
      */
-    static function keys_exits($keys, $array) {
+    static function keys_exits(array $array, array $keys) {
         return (count(array_intersect($keys, array_keys($array)))==count($keys));
     }
 
-    static function replace(&$array, $find, $replace) {
-        if(!is_array($array))return;
-        foreach($array as &$value) {
-            if(is_object($value))
-                self::cast($value);
-            if(is_array($value))
-                self::replace($value, $find, $replace);
-            if($value===$find)
-                $value = $replace;
-        }
-    }
-
     /**
-     * Does the php functin explode and removes all resulting elements which are empty
-     * @param type $delimiter
-     * @param type $string
-     * @return type
+     * Does the php function explode and removes all resulting elements which are empty
+     * @param string $delimiter
+     * @param string $string
+     * @return array
      */
-    static function explodeClean($delimiter, $string) {
+    static function explode($delimiter, $string) {
         $ret = array();
         $tmp = explode($delimiter, $string);
         foreach($tmp as $val) {
@@ -418,12 +393,12 @@ class Arrays {
     }
 
     /**
-     * Loops over $array and puts $prefix in front of each value. A new array is returned.
+     * Loops over $array and puts $prefix in front of each value and returns the result
      * @param array $array
-     * @param type $prefix
+     * @param string $prefix
      * @return array
      */
-    static function appendPrefix($array, $prefix) {
+    static function appendPrefix(array $array, $prefix) {
         $ret = array();
         foreach($array as $idx => $val) {
             $ret[$idx] = $prefix.$val;
@@ -433,12 +408,11 @@ class Arrays {
 
     /**
      * Fills $source with $value till its count() == $size
-     *
-     * @param $source
-     * @param $size
-     * @param $value
+     * @param array $source
+     * @param int $size
+     * @param mixed $value
      */
-    static function fill(&$source, $size, $value) {
+    static function fill(array &$source, $size, $value) {
         if(!is_array($source) || !is_int($size)) {
             return;
         }
