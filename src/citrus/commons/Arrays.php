@@ -420,4 +420,23 @@ class Arrays {
             array_push($source, $value);
         }
     }
+
+    /**
+     * Inserts source into target recursively. Whenever a property of $source is not found is inserted into $target
+     * @param array $source
+     * @param array $target
+     */
+    static function insert($source, &$target) {
+
+        if(gettype($source)!==gettype($target) || !is_array($source))return;
+
+        foreach($source as $index => $value) {
+            if(!array_key_exists($index, $target) || $target[$index] === NULL) {
+                $target[$index] = $value;
+            } else {
+                self::insert($value, $target[$index]);
+            }
+        }
+
+    }
 } 
