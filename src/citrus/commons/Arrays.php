@@ -427,9 +427,7 @@ class Arrays {
      * @param array $target
      */
     static function insert($source, &$target) {
-
         if(gettype($source)!==gettype($target) || !is_array($source))return;
-
         foreach($source as $index => $value) {
             if(!array_key_exists($index, $target) || $target[$index] === NULL) {
                 $target[$index] = $value;
@@ -437,6 +435,30 @@ class Arrays {
                 self::insert($value, $target[$index]);
             }
         }
-
     }
+
+    /**
+     * Recursively walks through $source and sets all values to NULL if getttype(value) is in (boolean|integer|double|string|unknown type)
+     * @param array $source
+     */
+    static function resetPrimitiveValues(array &$source) {
+        foreach($source as $index => $value) {
+            if(in_array(gettype($value), array('boolean', 'integer', 'double', 'string', 'unknown type'))) {
+                $source[$index] = NULL;
+            }
+            elseif(gettype($value) === 'array') {
+                self::resetPrimitiveValues($value);
+            }
+        }
+    }
+
+//    /**
+//     * Recursively walks through $source and removes all properties which values are NULL or empty arrays
+//     * @param array $source
+//     */
+//    static function cleanUp(array &$source) {
+//        foreach($source as $index => $value) {
+//
+//        }
+//    }
 } 
