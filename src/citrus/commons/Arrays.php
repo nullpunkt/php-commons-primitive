@@ -372,7 +372,7 @@ class Arrays {
      */
     static function hasEmptyValues(array $array) {
         foreach($array as $value) {
-            if(null === $value || '' === trim($value)) {
+            if(!(null === $value || '' === trim($value))) {
                 return false;
             }
         }
