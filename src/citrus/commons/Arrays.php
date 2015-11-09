@@ -362,7 +362,21 @@ class Arrays {
             $array===NULL
             || !is_array($array)
             || count($array)===0
-        ;
+            ;
+    }
+
+    /**
+     * Returns true if all of $array`s values are null or trim($value)==''
+     * @param array|null $array
+     * @return bool
+     */
+    static function hasEmptyValues(array $array) {
+        foreach($array as $value) {
+            if(null === $value || '' === trim($value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
