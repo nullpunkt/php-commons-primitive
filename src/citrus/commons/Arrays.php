@@ -426,7 +426,7 @@ class Arrays {
      * @param int $size
      * @param mixed $value
      */
-    static function fill(array &$source, $size, $value) {
+    static function feed(array &$source, $size, $value) {
         if(!is_array($source) || !is_int($size)) {
             return;
         }
@@ -464,6 +464,64 @@ class Arrays {
                 self::resetPrimitiveValues($value);
             }
         }
+    }
+
+    /**
+     * Equivalent to phps array_fill function with the difference that value could be a function. Called with $i as the current $index
+     * @param int $start_index <p>
+     * The first index of the returned array.
+     * Supports non-negative indexes only.
+     * </p>
+     * @param int $num <p>
+     * Number of elements to insert
+     * </p>
+     * @param mixed $value <p>
+     * Value to use for filling
+     * </p>
+     * @return array the filled array
+     */
+    static function fill($start_index, $num, $value) {
+        if(!is_callable($value)) {
+            return array_fill($start_index, $num, $value);
+        }
+        $ret = array();
+        $max = $start_index + $num;
+        for($i = $start_index; $i<$max; $i++) {
+            if($start_index === 0) {
+                $ret[] = $value($i);
+            } else {
+                $ret[$i] = $value($i);
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Checks if given array is an associative array (http://stackoverflow.com/questions/173400)
+     * @param array $array
+     * @return bool
+     */
+    static function isAssociative(array $array) {
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * Creates a hash out of given array which may contain multistage values. Must not have any objects inside.
+     * @param array $array
+     * @throws \Exception if one of the values is an object
+     */
+    static function hash(array $array) {
+        $str = '';
+        if(self::isAssociative($array)) {
+            ksort($array);
+        }
+        foreach($array as $index => $value) {
+            if(is_object($value)) {
+                throw new \Exception('Could not process hash of array because given value is an object (key: '.$index.')');
+            }
+            $str .= $index.'=>'.(is_array($value) ? self::hash($value) : $value);
+        }
+        return md5($str);
     }
 
 //    /**
