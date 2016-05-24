@@ -230,12 +230,18 @@ class Arrays {
 
     /**
      * Return the value in the given keypath. Returns $default (default=null) if not exist
-     * @param array $array
-     * @param array $path
+     * @param null|array $array
+     * @param string|array $path an array or a fullstop seperated path to the desired value
      * @param null|mixed $default (default=null)
      * @return null|mixed
      */
-    static function keyPathValue(array $array, array $path, $default=NULL) {
+    static function keyPathValue($array, array $path, $default=NULL) {
+        if(!is_array($array)) {
+            return $default;
+        }
+        if(is_string($path)) {
+            $path = self::explode('.', $path);
+        }
         if(!is_array($path)) {
             return $default;
         }
