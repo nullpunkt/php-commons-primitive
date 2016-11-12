@@ -2,7 +2,7 @@
     "name": "citrus/commons",
     "description": "A library of common functionality used within php.",
     "minimum-stability": "stable",
-    "license": "proprietary",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Tobias Seipke",
@@ -11,7 +11,10 @@
     ],
     "autoload": {
         "psr-4": {
-            "citrus\\commons\\": "/src/citrus/commons/"
+            "citrus\\commons\\": "src/citrus/commons"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.6"
     }
 }

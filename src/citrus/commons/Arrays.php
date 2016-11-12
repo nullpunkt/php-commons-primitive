@@ -67,10 +67,10 @@ class Arrays {
      * @param null $key
      * @return bool
      */
-    static function createValueIfNotExists(array &$array, $value, $key=NULL) {
+    static function createValueIfNotExists(array &$array, $value, $key=null) {
         $exists = in_array($value, $array);
         if(!$exists) {
-            if($key!==NULL)$array[$key] = $value;
+            if($key!==null)$array[$key] = $value;
             else $array[] = $value;
         }
         return !$exists;
@@ -359,6 +359,19 @@ class Arrays {
     }
 
     /**
+     * @param array $array
+     * @param string $delimiter
+     * @return array
+     */
+    static function deflat(array $array, $delimiter = '.') {
+        $ret = array();
+        foreach($array as $entry => $value) {
+            static::insert($ret, explode($delimiter, $entry), $value);
+        }
+        return $ret;
+    }
+
+    /**
      * Returns null if $array is null, no array or an empty array
      * @param array|null $array
      * @return bool
@@ -442,22 +455,6 @@ class Arrays {
     }
 
     /**
-     * Inserts source into target recursively. Whenever a property of $source is not found is inserted into $target
-     * @param array $source
-     * @param array $target
-     */
-    static function insert($source, &$target) {
-        if(gettype($source)!==gettype($target) || !is_array($source))return;
-        foreach($source as $index => $value) {
-            if(!array_key_exists($index, $target) || $target[$index] === NULL) {
-                $target[$index] = $value;
-            } else {
-                self::insert($value, $target[$index]);
-            }
-        }
-    }
-
-    /**
      * Recursively walks through $source and sets all values to NULL if getttype(value) is in (boolean|integer|double|string|unknown type)
      * @param array $source
      */
@@ -510,6 +507,30 @@ class Arrays {
     static function isAssociative(array $array) {
         return array_keys($array) !== range(0, count($array) - 1);
     }
+
+    /**
+     * Inserts $value at given $path in $array if the path not exists, its created.
+     * @param array $array
+     * @param $path
+     * @param $value
+     * @return bool
+     */
+    static function insert(array &$array, $path, $value) {
+        if(!is_array($path) || empty($path)) {
+            return false;
+        }
+        $key = array_shift($path);
+        if(empty($path)) {
+            if(!static::createKeyIfNotExists($array, $key, $value)) {
+                $array[$key] = $value;
+            }
+            return true;
+        } else {
+            static::createKeyIfNotExists($array, $key, array());
+        }
+        static::insert($array[$key], $path, $value);
+    }
+
 
     /**
      * Creates a hash out of given array which may contain multistage values. Must not have any objects inside.
